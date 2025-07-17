@@ -124,7 +124,11 @@
 
 <br/>
 
-## 4. 해결한 트러블 슈팅
+## 4. 웹 어플리케이션
+
+
+
+## 5. 해결한 트러블 슈팅
 
 https://drive.google.com/file/d/1tZ4D380kxmQEOpNzo_Ue-vAGyeDFdfiC/view?usp=sharing
 
@@ -140,5 +144,6 @@ https://drive.google.com/file/d/1tZ4D380kxmQEOpNzo_Ue-vAGyeDFdfiC/view?usp=shari
 <br/>
 
 한글관련 문제
+
 **③ K-means Clustering 수행 과정 중 충돌 문제 확인**
 - 한글 출력의 어려움을 겪음
