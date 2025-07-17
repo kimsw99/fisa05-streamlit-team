@@ -124,7 +124,13 @@
 
 <br/>
 
-## 4. 해결한 트러블 슈팅
+## 4. 웹 어플리케이션
+
+https://fisa05-stream-team1.streamlit.app/
+
+<br/>
+
+## 5. 해결한 트러블 슈팅
 
 https://drive.google.com/file/d/1tZ4D380kxmQEOpNzo_Ue-vAGyeDFdfiC/view?usp=sharing
 
@@ -137,3 +143,9 @@ https://drive.google.com/file/d/1tZ4D380kxmQEOpNzo_Ue-vAGyeDFdfiC/view?usp=shari
  
 **② '상세주소'에서 '전남', '경북' 등의 표현이 이상치 제거에 오류를 발생시킴을 확인**
 - '상세주소' 앞 2글자를 매핑된 문자열로 변환
+<br/>
+
+한글관련 문제
+
+**③ K-means Clustering 수행 과정 중 충돌 문제 확인**
+- 한글 출력의 어려움을 겪음
