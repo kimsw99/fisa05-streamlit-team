@@ -20,9 +20,28 @@
 
 <img width="1588" height="353" alt="Image" src="https://github.com/user-attachments/assets/1aed9527-fc09-4a2d-b7db-1f87b61580b5" />
 
-| 연번 | 미디어타입 | 제목 | 장소명 | 장소타입 | 장소설명 | 영업시간 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 브레이크타임 | 휴무일 | 주소 | 위도 | 경도 | 전화번호 | 최종작성일 |
+<table border="1" align="center">
+  <tr>
+    <td align="center">연번</td>
+    <td align="center">미디어타입</td>
+    <td align="center">제목</td>
+    <td align="center">장소명</td>
+    <td align="center">장소타입</td>
+    <td align="center">장소설명</td>
+    <td align="center">영업시간</td>
+  </tr>
+  <tr>
+    <td align="center">브레이크타임</td>
+    <td align="center">휴무일</td>
+    <td align="center">주소</td>
+    <td align="center">위도</td>
+    <td align="center">경도</td>
+    <td align="center">전화번호</td>
+    <td align="center">최종작성일</td>
+  </tr>
+</table>
+
+
 
 다음은 데이터 변수에 대한 설명이다.
 
