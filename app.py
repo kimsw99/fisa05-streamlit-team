@@ -23,16 +23,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
-def korean_setting():
-    # ▶ 폰트 경로 지정
-    # 나눔글꼴 경로 설정
-    font_path = 'font/NanumGothic.ttf'
 
-    # 폰트 이름 가져오기
-    font_name = fm.FontProperties(fname=font_path).get_name()
-
-    # 폰트 설정
-    plt.rc('font', family=font_name)
     
 @st.cache_data
 def get_filming_location_list() -> pd.DataFrame:
@@ -307,12 +298,10 @@ with tab2:
     )
     st.plotly_chart(fig5, use_container_width=True)
 with tab3:
-    korean_setting()  # 한글 폰트 설정
     st.set_page_config(layout="wide")
 
-    st.subheader("🎬 미디어타입별 클러스터링 시각화 (Plotly)")
+    st.subheader("🎬 미디어타입별 클러스터링 시각화")
 
-        # :흰색_확인_표시: 클러스터링
     # :흰색_확인_표시: 클러스터링
     cluster_df = filming_df[['미디어타입', '위도', '경도']].dropna()
     cluster_df = cluster_df[(cluster_df['위도'] != 0) & (cluster_df['경도'] != 0)]
@@ -327,16 +316,17 @@ with tab3:
             cluster_df.loc[temp_df.index, '미디어타입별_cluster'] = 0
             centroid_dict[media] = kmeans.cluster_centers_[0]
     # :흰색_확인_표시: 시각화
-    st.subheader(":둥근_압핀: 클러스터링 결과 시각화")
-    fig, ax = plt.subplots(figsize=(8,6))
+    #fig, ax = plt.subplots(figsize=(8,6))
+    fig, ax = plt.subplots(figsize=(8,6))  # 6*100=600px, 4*100=400px 크기
+    # fig.set_dpi(100)  # 6*100=600px, 4*100=400px 크기
     for media in cluster_df['미디어타입'].unique():
         temp = cluster_df[cluster_df['미디어타입'] == media]
         ax.scatter(temp['경도'], temp['위도'], label=media, alpha=0.5)
     for i, (media, (lat, lon)) in enumerate(centroid_dict.items()):
         plt.scatter(lon, lat, c='black', marker='X', s=50)
-        plt.text(lon + 0.01, lat + 0.01, f"{media}", fontsize=9, color='black')
+        plt.text(lon + 0.08, lat + 0.01, f"{media}", fontsize=9, color='black')
     ax.legend()
-    ax.set_title("미디어타입별 클러스터 중심 표시")
-    ax.set_xlabel("경도")
-    ax.set_ylabel("위도")
+    ax.set_xlabel("longitude")
+    ax.set_ylabel("latitude")
     st.pyplot(fig)
+    
