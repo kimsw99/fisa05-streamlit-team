@@ -19,7 +19,7 @@
 
 15034 rows × 14 column로 구성되었다.
 
-![image.png](attachment:73f617ec-7bc3-4add-860e-84efbdb4322d:image.png)
+<img width="1588" height="353" alt="Image" src="https://github.com/user-attachments/assets/1aed9527-fc09-4a2d-b7db-1f87b61580b5" />
 
 | 연번 | 미디어타입 | 제목 | 장소명 | 장소타입 | 장소설명 | 영업시간 |
 | --- | --- | --- | --- | --- | --- | --- |
