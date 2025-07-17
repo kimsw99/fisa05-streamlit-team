@@ -202,7 +202,7 @@ location_name, program_name, confirmed, search_type = sidebar_inputs(filming_df)
 screening_data = searching_data(filming_df, (location_name, program_name), search_type)
     
 
-tab1 , tab2, tab3 = st.tabs(['📍 촬영지 탐색', '📊 통계', '통계2'])
+tab1 , tab2, tab3 = st.tabs(['📍 촬영지 탐색', '📊 통계', '🎯클러스터링'])
 with tab1:
     if confirmed:
         st.title("🎬 촬영지 탐색 서비스")
@@ -261,9 +261,8 @@ with tab2:
 
     st.subheader("📊 장소타입 × 지역별 명소 갯수")
     # 목록 리스트를 생성하고, 그래프 그리기
-    select_list = ['ALL']
-    select_list.extend(filming_df.장소타입)
-    select_ = st.selectbox('Select', set(select_list))
+    select_list = ['ALL','역','식당','상점','카페','촬영지','숙박시설']
+    select_ = st.selectbox('Select', select_list)
     st.plotly_chart(many_area(filming_df, select_))
     
     st.subheader("📊 미디어타입 × 장소타입 히트맵 (촬영지 제외)")
