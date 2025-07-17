@@ -8,13 +8,10 @@
 
 최근 많은 사람들이 방송 콘텐츠 속 장소에 대한 관심이 높아지고 있다. 
 
-본 프로젝트는 **방송∙영화 콘텐츠에 등장한 촬영지 데이터를 기반으로, 사용자가 입력한 정보에 따라** 
+본 프로젝트는 **방송∙영화 콘텐츠에 등장한 촬영지 데이터를 기반으로, 사용자가 입력한 정보에 따라** **관련 장소를 쉽게 찾을 수 있는 서비스**를 목표로 한다.
 
-**관련 장소를 쉽게 찾을 수 있는 서비스**를 목표로 한다.
-
-사용자는 자신의 **주소**나 **제목**을 입력하면, 해당 지역 혹은 작품의 촬영 장소를 
-
-지도 기반으로 한 눈에 확인할 수 있다.
+사용자는 자신의 **주소**나 **제목**을 입력하면, 해당 지역 혹은 작품의 촬영 장소를 지도 기반으로 한 눈에 확인할 수 있다.
+<br/>
 <br/>
 ## 1. 사용 데이터 - 소셜데이터 속 K-무비 연관 관광지 데이터
 
@@ -24,7 +21,6 @@
 <img width="1588" height="353" alt="Image" src="https://github.com/user-attachments/assets/1aed9527-fc09-4a2d-b7db-1f87b61580b5" />
 
 | 연번 | 미디어타입 | 제목 | 장소명 | 장소타입 | 장소설명 | 영업시간 |
-
 | --- | --- | --- | --- | --- | --- | --- |
 | 브레이크타임 | 휴무일 | 주소 | 위도 | 경도 | 전화번호 | 최종작성일 |
 
@@ -46,16 +42,25 @@
   
 <br/>
 
-2. 프로토타입
-
-![Image](https://github.com/user-attachments/assets/ff907909-fc03-4b73-8ebb-4b6fc8c1f145)
-
-![Image](https://github.com/user-attachments/assets/e1057c22-2a7a-4c8d-86ab-250b81c855af)
+## 2. 프로토타입
 
 
-              
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/ff907909-fc03-4b73-8ebb-4b6fc8c1f145" width="300px"><br>
+      <b>📌 주소 기반 장소 추천 화면</b>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/e1057c22-2a7a-4c8d-86ab-250b81c855af" width="300px"><br>
+      <b>📌 작품명 기반 장소 추천 화면</b>
+    </td>
+  </tr>
+</table>
 
-3. 데이터 전처리
+<br/>
+
+## 3. 데이터 전처리
 
 확인할 부분
 
