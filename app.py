@@ -261,7 +261,7 @@ with tab2:
 
     st.subheader("📊 장소타입 × 지역별 명소 갯수")
     # 목록 리스트를 생성하고, 그래프 그리기
-    select_list = ['ALL','역','식당','상점','카페','촬영지','숙박시설']
+    select_list = ['ALL','역','식당','상점','카페','촬영지','숙박 시설']
     select_ = st.selectbox('Select', select_list)
     st.plotly_chart(many_area(filming_df, select_))
     
