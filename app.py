@@ -162,7 +162,7 @@ def searching_data(filming_df,search_name: tuple, search_type: str):
     if search_type == '주소':
         search = filming_df[filming_df['상세주소'].str.contains(search_name[0], na=False)]
     else:   
-        search = filming_df[filming_df['제목'].str.contains(search_name[1], na=False)]
+        search = filming_df[filming_df.제목 ==search_name[1]]
     
     return search
 
