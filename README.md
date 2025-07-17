@@ -48,11 +48,11 @@
 <table align="center">
   <tr>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/ff907909-fc03-4b73-8ebb-4b6fc8c1f145" width="300px"><br>
+      <img src="https://github.com/user-attachments/assets/e1057c22-2a7a-4c8d-86ab-250b81c855af" width="300px"><br>
       <b>📌 주소 기반 장소 추천 화면</b>
     </td>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/e1057c22-2a7a-4c8d-86ab-250b81c855af" width="300px"><br>
+      <img src="https://github.com/user-attachments/assets/ff907909-fc03-4b73-8ebb-4b6fc8c1f145" width="300px"><br>
       <b>📌 작품명 기반 장소 추천 화면</b>
     </td>
   </tr>
@@ -84,7 +84,7 @@
 
 **⑤ 식별하기 편한가?**
 
-장소타입을 시각화했을 때 ‘restaurant’보다 ‘식당’이 식별하기 편함 → 한글로 변환
+장소타입을 시각화했을 때 ‘restaurant’은 ‘식당’보다 식별하기 불편함 → 한글로 변환
 
 ‘cafe’ → 카페
 
@@ -97,3 +97,6 @@
 ‘store’ → 상점
 
 ‘playground’ → 촬영지
+<br/>
+
+또한 주소를 살펴보았을 때, 구주소와 신주소가 통합되지 않은 모습을 보여 식별하기 불편함 → 상세주소 열을 만들어 통합
