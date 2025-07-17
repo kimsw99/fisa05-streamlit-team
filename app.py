@@ -26,44 +26,51 @@ def get_filming_location_list() -> pd.DataFrame:
     return filming_df
 
 def draw_map_by_search(filming_df, search_name: str, search_type: int):
-    # 해당 지역명 / 프로그램명 으로 필터링
+    filtered_df = pd.DataFrame()  # 기본값 설정
+
     if search_type == 1:
-        filtered_df = filming_df[filming_df['주소'].str.contains(search_name, na=False)]
-    else:   
-        filtered_df = filming_df[filming_df['제목'].str.contains(search_name, na=False)]
-    
-    # 지도의 초기 위치 및 줌 레벨 설정 (대한민국 중심 + 전체 뷰)
-    m = folium.Map(location=[36.5, 127.5], zoom_start=7, tiles='CartoDB Voyager')
-    
-    # 필터링된 데이터의 위도와 경도를 기반으로 지도 중심 설정
-    # lat = filtered_df['위도'].mean()
-    # lng = filtered_df['경도'].mean()
+        filtered_df = filming_df[filming_df['주소'].str.contains(search_name.strip(), na=False)]
+        lat = filtered_df['위도'].mean()
+        lng = filtered_df['경도'].mean()
+        m = folium.Map(location=[lat, lng], zoom_start=8, tiles='CartoDB Voyager')
 
-    # m = folium.Map(location=[lat, lng], zoom_start=8, tiles='CartoDB Voyager')
-    
+    elif search_type == 2:
+        if search_name:  # None이나 빈 문자열 체크
+            filtered_df = filming_df[filming_df.제목 == search_name.strip()]
+            m = folium.Map(location=[36.5, 127.5], zoom_start=7, tiles='CartoDB Voyager')
+        else:
+            st.warning("검색어가 입력되지 않았습니다.")
+            return
+
+    else:
+        st.error("유효하지 않은 검색 타입입니다.")
+        return
+
+    if filtered_df.empty:
+        st.info("검색 결과가 없습니다.")
+        return
+
+    # 마커 추가
     cluster = MarkerCluster().add_to(m)
-    
-
     for _, row in filtered_df.iterrows():
-        # 원하는 컬럼 정보를 tooltip으로 가공
         tooltip = f"""<b>작품명:</b> {row['제목']}<br>
                       <b>장소설명:</b> {row['장소설명']}<br>
                       <b>장소타입:</b> {row['장소타입']}"""
 
-        # marker 생성
         folium.Marker(
             location=[row['위도'], row['경도']],
-            tooltip=tooltip,  # 마커 hover 시 나타나는 정보
+            tooltip=tooltip,
             popup=folium.Popup(
                 f"""<b>장소명:</b> {row['장소명']}<br>
                     <b>주소:</b> {row['주소']}<br>
                     <b>영업시간:</b> {row['영업시간']}<br>
                     <b>전화번호:</b> {row['전화번호']}""",
                 max_width=400
-            )  # 클릭시 상세 정보
+            )
         ).add_to(cluster)
 
     return folium_static(m, width=1200, height=600)
+
 
 def draw_histogram_by_search(filming_df,search_name: str, search_type: int):
     """
@@ -92,7 +99,7 @@ def draw_histogram_by_search(filming_df,search_name: str, search_type: int):
     if search_type == 1:
         search = filming_df[filming_df['주소'].str.contains(search_name, na=False)]
     else:   
-        search = filming_df[filming_df['제목'].str.contains(search_name, na=False)]
+        search = filming_df[filming_df.제목 == search_name]
     
     categories = filming_df['장소타입'].unique()
 
@@ -115,55 +122,44 @@ def draw_histogram_by_search(filming_df,search_name: str, search_type: int):
     
     return fig
 
-def sidebar_inputs() -> tuple[str, bool]:
-    """
-    Streamlit 지역(구) 텍스트 입력, 확인 버튼을 생성하고 값을 반환합니다.
+def sidebar_inputs(filming_df) -> tuple[str, str, bool]:
+    location_name, program_name = '', ''
+    confirm_btn = False
 
-    Returns:
-        tuple: (지역명(str), 확인버튼 클릭여부(bool))
-    """
-    location_name = ''
-    program_name = ''
-    confirmed = False
-    
-    search_type = st.sidebar.radio('Choose:',['주소','프로그램명','연예인'])
-    
+    search_type = st.sidebar.radio('검색', ['주소', '프로그램명', '연예인'])
+
     if search_type == '주소':
         location_name = st.sidebar.text_input('지역명을 입력하세요(시/군/구): ')
-        confirm_btn = st.sidebar.button('확인')
-        
-    # 프로그램, 연예인에서 set( ) 해당 부분은 데이터 전처리 이후에 데이터를 넣는다.
     elif search_type == '프로그램명':
-        program_name = st.sidebar.selectbox('프로그램명을 입력하세요: ', set(filming_df['제목'][(filming_df.미디어타입 == 'drama')|
-                                                                                 (filming_df.미디어타입 == 'movie')|
-                                                                                 (filming_df.미디어타입 == 'show')]))
-        confirm_btn = st.sidebar.button('확인')
+        programs = sorted(set(filming_df['제목'][filming_df['미디어타입'] != 'artist']))
+        program_name = st.sidebar.selectbox('프로그램명을 선택하세요: ', [''] + programs)
+        st.sidebar.write(program_name)
     elif search_type == '연예인':
-        program_name = st.sidebar.selectbox('연예인을 입력하세요: ', set(filming_df['제목'][(filming_df.미디어타입 == 'artist')]))
-        confirm_btn = st.sidebar.button('확인')
+        artists = sorted(set(filming_df['제목'][filming_df['미디어타입'] == 'artist']))
+        program_name = st.sidebar.selectbox('연예인을 선택하세요: ', [''] + artists)
+        
+    confirm_btn = st.sidebar.button('확인')
 
     return location_name, program_name, confirm_btn
 
 
-
-
+# main 실행부
 filming_df = get_filming_location_list()
-location_name, program_name,confirmed = sidebar_inputs()
+location_name, program_name, confirmed = sidebar_inputs(filming_df)
 
 if confirmed:
-    
     st.set_page_config(layout="wide")
-    st.header(f"{location_name} 촬영지 정보")
+    st.header(f"{location_name or program_name} 촬영지 정보")
     col1, col2 = st.columns(2)
-    with col1:
-        if not location_name == '':
-            draw_map_by_search(filming_df,location_name,1)
-        elif not program_name=='':
-            draw_map_by_search(filming_df,program_name,2)
 
-    with col2:
-        if not location_name == '':
-            st.plotly_chart(draw_histogram_by_search(filming_df,location_name,1))
-        elif not program_name=='':
-            st.plotly_chart(draw_histogram_by_search(filming_df,program_name,2))
+    if location_name:
+        with col1:
+            draw_map_by_search(filming_df, location_name, 1)
+        with col2:
+            st.plotly_chart(draw_histogram_by_search(filming_df, location_name, 1))
+    elif program_name:
+        with col1:
+            draw_map_by_search(filming_df, program_name, 2)
+        with col2:
+            st.plotly_chart(draw_histogram_by_search(filming_df, program_name, 2))
     
