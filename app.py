@@ -25,17 +25,24 @@ def get_filming_location_list() -> pd.DataFrame:
     filming_df = pd.read_csv('data/촬영지_데이터.csv',encoding='cp949')
     return filming_df
 
-def draw_map_by_location(filming_df, location_name: str):
-    # 해당 지역명으로 필터링
-    filtered_df = filming_df[filming_df['주소'].str.contains(location_name, na=False)]
-    if filtered_df.empty:
-        return None  # 해당 지역에 촬영지가 없을 경우 None 반환
+def draw_map_by_search(filming_df, search_name: str, search_type: int):
+    # 해당 지역명 / 프로그램명 으로 필터링
+    if search_type == 1:
+        filtered_df = filming_df[filming_df['주소'].str.contains(search_name, na=False)]
+    else:   
+        filtered_df = filming_df[filming_df['제목'].str.contains(search_name, na=False)]
     
-    lat = filtered_df['위도'].mean()
-    lng = filtered_df['경도'].mean()
+    # 지도의 초기 위치 및 줌 레벨 설정 (대한민국 중심 + 전체 뷰)
+    m = folium.Map(location=[36.5, 127.5], zoom_start=7, tiles='CartoDB Voyager')
+    
+    # 필터링된 데이터의 위도와 경도를 기반으로 지도 중심 설정
+    # lat = filtered_df['위도'].mean()
+    # lng = filtered_df['경도'].mean()
 
-    m = folium.Map(location=[lat, lng], zoom_start=8, tiles='CartoDB Voyager')
+    # m = folium.Map(location=[lat, lng], zoom_start=8, tiles='CartoDB Voyager')
+    
     cluster = MarkerCluster().add_to(m)
+    
 
     for _, row in filtered_df.iterrows():
         # 원하는 컬럼 정보를 tooltip으로 가공
@@ -58,7 +65,7 @@ def draw_map_by_location(filming_df, location_name: str):
 
     return folium_static(m, width=1200, height=600)
 
-def draw_histogram_by_location(filming_df,location_name: str):
+def draw_histogram_by_search(filming_df,search_name: str, search_type: int):
     """
     입력된 지역명에 해당하는 촬영지의 연도별 촬영 횟수를 히스토그램으로 시각화합니다.
 
@@ -68,6 +75,7 @@ def draw_histogram_by_location(filming_df,location_name: str):
     Returns:
         plt: matplotlib.pyplot 객체
     """
+
     categories = filming_df['장소타입'].unique() # 카테고리 순서 고정
     color_map = {
     'cafe':       '#A45A52',
@@ -78,10 +86,14 @@ def draw_histogram_by_location(filming_df,location_name: str):
     'store':      '#8D6C8D', 
     }
 
- # 카테고리 색 고정
+    # 카테고리 색 고정
     # search_type = input('뭐로 검색할래 (제목 or 주소)') # 검색 유형 설정
     # search_keyword = input('입력해') # 검색 내용
-    search = filming_df[filming_df['주소'].str.contains(location_name, na=False)]
+    if search_type == 1:
+        search = filming_df[filming_df['주소'].str.contains(search_name, na=False)]
+    else:   
+        search = filming_df[filming_df['제목'].str.contains(search_name, na=False)]
+    
     categories = filming_df['장소타입'].unique()
 
     # 파이플롯 생성을 위해 value_counts
@@ -110,12 +122,33 @@ def sidebar_inputs() -> tuple[str, bool]:
     Returns:
         tuple: (지역명(str), 확인버튼 클릭여부(bool))
     """
-    location_name = st.sidebar.text_input('지역명을 입력하세요(시/군/구): ')
-    confirm_btn = st.sidebar.button('확인')
-    return location_name, confirm_btn
+    location_name = ''
+    program_name = ''
+    confirmed = False
+    
+    search_type = st.sidebar.radio('Choose:',['주소','프로그램명','연예인'])
+    
+    if search_type == '주소':
+        location_name = st.sidebar.text_input('지역명을 입력하세요(시/군/구): ')
+        confirm_btn = st.sidebar.button('확인')
+        
+    # 프로그램, 연예인에서 set( ) 해당 부분은 데이터 전처리 이후에 데이터를 넣는다.
+    elif search_type == '프로그램명':
+        program_name = st.sidebar.selectbox('프로그램명을 입력하세요: ', set(filming_df['제목'][(filming_df.미디어타입 == 'drama')|
+                                                                                 (filming_df.미디어타입 == 'movie')|
+                                                                                 (filming_df.미디어타입 == 'show')]))
+        confirm_btn = st.sidebar.button('확인')
+    elif search_type == '연예인':
+        program_name = st.sidebar.selectbox('연예인을 입력하세요: ', set(filming_df['제목'][(filming_df.미디어타입 == 'artist')]))
+        confirm_btn = st.sidebar.button('확인')
+
+    return location_name, program_name, confirm_btn
+
+
+
 
 filming_df = get_filming_location_list()
-location_name, confirmed = sidebar_inputs()
+location_name, program_name,confirmed = sidebar_inputs()
 
 if confirmed:
     
@@ -123,8 +156,14 @@ if confirmed:
     st.header(f"{location_name} 촬영지 정보")
     col1, col2 = st.columns(2)
     with col1:
-        draw_map_by_location(filming_df,location_name)
+        if not location_name == '':
+            draw_map_by_search(filming_df,location_name,1)
+        elif not program_name=='':
+            draw_map_by_search(filming_df,program_name,2)
 
     with col2:
-        st.plotly_chart(draw_histogram_by_location(filming_df,location_name))
+        if not location_name == '':
+            st.plotly_chart(draw_histogram_by_search(filming_df,location_name,1))
+        elif not program_name=='':
+            st.plotly_chart(draw_histogram_by_search(filming_df,program_name,2))
     
