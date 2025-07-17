@@ -1,6 +1,8 @@
 # 우리동네 명장면
 <br/>
-0. 프로젝트 개요
+
+## 0. 프로젝트 개요
+
 
 "TV 속 사람들이 갔던 장소는 어디일까? 우리 동네에도 있을까?”
 
@@ -14,13 +16,15 @@
 
 지도 기반으로 한 눈에 확인할 수 있다.
 <br/>
-1. 사용 데이터 - 소셜데이터 속 K-무비 연관 관광지 데이터
+## 1. 사용 데이터 - 소셜데이터 속 K-무비 연관 관광지 데이터
+
 
 15034 rows × 14 column로 구성되었다.
 
 <img width="1588" height="353" alt="Image" src="https://github.com/user-attachments/assets/1aed9527-fc09-4a2d-b7db-1f87b61580b5" />
 
 | 연번 | 미디어타입 | 제목 | 장소명 | 장소타입 | 장소설명 | 영업시간 |
+
 | --- | --- | --- | --- | --- | --- | --- |
 | 브레이크타임 | 휴무일 | 주소 | 위도 | 경도 | 전화번호 | 최종작성일 |
 
@@ -41,9 +45,12 @@
 - 최종작성일(object) : 데이터가 작성된 날짜
   
 <br/>
- 2. 프로토타입
 
+2. 프로토타입
 
+![Image](https://github.com/user-attachments/assets/ff907909-fc03-4b73-8ebb-4b6fc8c1f145)
+
+![Image](https://github.com/user-attachments/assets/e1057c22-2a7a-4c8d-86ab-250b81c855af)
 
 
               
