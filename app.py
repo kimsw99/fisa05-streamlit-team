@@ -238,8 +238,9 @@ with tab1:
             # 현재 추출된 데이터를 기반으로 랜덤으로 3개 추출하여 표시
             today_spot = screening_data[['제목', '장소명', '영업시간', '장소설명', '전화번호', '주소']]
             
-            if len(today_spot) >= 3:
-                today_spot = today_spot.sample(n=5)
+            if len(today_spot) > 0:
+                sample_size = min(5, len(today_spot))
+                today_spot = today_spot.sample(n=sample_size)
 
                 for i, row in today_spot.iterrows():
                     with st.container():
