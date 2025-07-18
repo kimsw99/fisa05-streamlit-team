@@ -157,10 +157,10 @@ def sidebar_inputs(filming_df) -> tuple[str, str, bool]:
     if search_type == '주소':
         location_name = st.sidebar.text_input('지역명을 입력하세요(시/군/구): ',placeholder='ex) 서울특별시 강남구')
     elif search_type == '프로그램명':
-        programs = sorted(set(filming_df['제목'][filming_df['미디어타입'] != 'artist']),reverse=True)
+        programs = sorted(set(filming_df.제목[filming_df['미디어타입'] != 'artist']),reverse=True)
         program_name = st.sidebar.selectbox('프로그램명을 선택하세요: ', [''] + programs)
     elif search_type == '연예인':
-        artists = sorted(set(filming_df['제목'][filming_df['미디어타입'] == 'artist']),reverse=True)
+        artists = sorted(set(filming_df.제목[filming_df['미디어타입'] == 'artist']),reverse=True)
         program_name = st.sidebar.selectbox('연예인을 선택하세요: ', [''] + artists)
         
     confirm_btn = st.sidebar.button('확인')
