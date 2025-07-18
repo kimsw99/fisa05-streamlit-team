@@ -23,7 +23,6 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
-
     
 @st.cache_data
 def get_filming_location_list() -> pd.DataFrame:
@@ -114,7 +113,7 @@ def draw_histogram_by_search(filming_df,search_name: str, search_type: int):
     if search_type == 1:
         search = filming_df[filming_df['상세주소'].str.contains(search_name, na=False)]
     else:   
-        search = filming_df[filming_df.제목 == search_name]
+        search = filming_df[filming_df['제목'] == search_name]
     
     categories = filming_df['장소타입'].unique()
 
@@ -162,7 +161,7 @@ def searching_data(filming_df,search_name: tuple, search_type: str):
     if search_type == '주소':
         search = filming_df[filming_df['상세주소'].str.contains(search_name[0], na=False)]
     else:   
-        search = filming_df[filming_df.제목 ==search_name[1]]
+        search = filming_df[filming_df['제목'] ==search_name[1]]
     
     return search
 
@@ -177,9 +176,9 @@ def many_area(filming_df:pd.DataFrame, search_type:str =''):
     # 지역명을 순회하며 각 명소들을 count
     for region_name in region_names:
         if search_type == 'ALL':
-            cnt_array[region_name] = filming_df.주소[filming_df.주소.str.contains(region_name)].count()
+            cnt_array[region_name] = filming_df['주소'][filming_df['주소'].str.contains(region_name)].count()
         else:
-            cnt_array[region_name] = filming_df.주소[(filming_df.주소.str.contains(region_name)) & (filming_df.장소타입 == search_type)].count()
+            cnt_array[region_name] = filming_df['주소'][(filming_df['주소'].str.contains(region_name)) & (filming_df['장소타입'] == search_type)].count()
 
     # 딕셔너리를 value순으로 내림차순 정렬
     cnt_array = dict(sorted(cnt_array.items(), key=lambda x: x[1], reverse=True))
@@ -201,11 +200,11 @@ filming_df = get_filming_location_list()
 location_name, program_name, confirmed, search_type = sidebar_inputs(filming_df)
 screening_data = searching_data(filming_df, (location_name, program_name), search_type)
     
-
-tab1 , tab2, tab3 = st.tabs(['📍 촬영지 탐색', '📊 통계', '🎯클러스터링'])
+st.title("🎬 우리동네 명장면")
+tab1 , tab2, tab3 = st.tabs(['📍 촬영지 탐색', '📊 통계', '👣 누적 지도'])
 with tab1:
     if confirmed:
-        st.title("🎬 촬영지 탐색 서비스")
+        
         st.set_page_config(layout="wide")
         st.header(f"{location_name or program_name} 촬영지 정보")
         col1, col2 = st.columns([1.25,1])
@@ -262,13 +261,13 @@ with tab2:
     st.subheader("📊 장소타입 × 지역별 명소 갯수")
     # 목록 리스트를 생성하고, 그래프 그리기
     select_list = ['ALL','역','식당','상점','카페','촬영지','숙박 시설']
-    select_ = st.selectbox('Select', select_list)
+    select_ = st.selectbox('선택', select_list)
     st.plotly_chart(many_area(filming_df, select_))
     
     st.subheader("📊 미디어타입 × 장소타입 히트맵 (촬영지 제외)")
 
     # 촬영지를 제외한 데이터만 사용
-    filtered_df = filming_df[filming_df["장소타입"] != "촬영지"]
+    filtered_df = filming_df
 
     pivot_1 = filtered_df.groupby(['미디어타입', '장소타입']).size().reset_index(name='count')
 
@@ -300,7 +299,7 @@ with tab2:
 with tab3:
     st.set_page_config(layout="wide")
 
-    st.subheader("🎬 미디어타입별 클러스터링 시각화")
+    st.subheader("👣 전국 촬영지 누적지도")
 
     # :흰색_확인_표시: 클러스터링
     cluster_df = filming_df[['미디어타입', '위도', '경도']].dropna()
@@ -316,17 +315,19 @@ with tab3:
             cluster_df.loc[temp_df.index, '미디어타입별_cluster'] = 0
             centroid_dict[media] = kmeans.cluster_centers_[0]
     # :흰색_확인_표시: 시각화
-    #fig, ax = plt.subplots(figsize=(8,6))
-    fig, ax = plt.subplots(figsize=(8,6))  # 6*100=600px, 4*100=400px 크기
+    #fig, ax = plt.subplots(figsize=(8,6)) 8,10이 지피티가 남한비율 최적화라함
+    fig, ax = plt.subplots(figsize=(8, 10), dpi=100)  # 6*100=600px, 4*100=400px 크기
     # fig.set_dpi(100)  # 6*100=600px, 4*100=400px 크기
     for media in cluster_df['미디어타입'].unique():
         temp = cluster_df[cluster_df['미디어타입'] == media]
         ax.scatter(temp['경도'], temp['위도'], label=media, alpha=0.5)
     for i, (media, (lat, lon)) in enumerate(centroid_dict.items()):
         plt.scatter(lon, lat, c='black', marker='X', s=50)
-        plt.text(lon + 0.08, lat + 0.01, f"{media}", fontsize=9, color='black')
+        plt.text(lon + 0.08, lat + 0.01, f"{media}", fontsize=9, color='black', rotation=45)
+
     ax.legend()
-    ax.set_xlabel("longitude")
-    ax.set_ylabel("latitude")
+    ax.set_title("전국 촬영지 누적지도")
+    ax.set_xlabel("경도")
+    ax.set_ylabel("위도")
     st.pyplot(fig)
     
