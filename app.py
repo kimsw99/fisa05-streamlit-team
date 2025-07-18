@@ -23,8 +23,17 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
-plt.rcParams['font.family'] ='Malgun Gothic'
-plt.rcParams['axes.unicode_minus'] =False
+import os
+
+@st.cache_data
+def fontRegistered():
+    font_dirs = [os.getcwd() + '/font']
+    font_files = fm.findSystemFonts(fontpaths=font_dirs)
+
+    for font_file in font_files:
+        fm.fontManager.addfont(font_file)
+    fm._load_fontmanager(try_read_cache=False)
+    
     
 @st.cache_data
 def get_filming_location_list() -> pd.DataFrame:
@@ -197,6 +206,12 @@ def many_area(filming_df:pd.DataFrame, search_type:str =''):
     return fig
 
 # main 실행부 
+
+fontRegistered()
+fontNames = [f.name for f in fm.fontManager.ttflist]
+fontname = 'NanumGothic' if 'NanumGothic' in fontNames else 'Malgun Gothic'
+plt.rc('font', family=fontname)
+
 
 filming_df = get_filming_location_list()
 location_name, program_name, confirmed, search_type = sidebar_inputs(filming_df)
